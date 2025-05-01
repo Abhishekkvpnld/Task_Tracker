@@ -24,9 +24,9 @@ const Home = () => {
   const [drop, setDrop] = useState(false);
 
 
-const handleDrop = ()=>{
+  const handleDrop = () => {
 
-}
+  }
 
 
 
@@ -41,12 +41,12 @@ const handleDrop = ()=>{
     }
   }, [search, data]);
 
-  
+
 
   useEffect(() => {
     const getData = async () => {
       try {
-      
+
         // setData(fetchData);
       } catch (error) {
         console.log(error.message);
@@ -77,15 +77,15 @@ const handleDrop = ()=>{
   const inProgress = filteredData.filter((dc) => dc.status === "inprogress");
   const complete = filteredData.filter((dc) => dc.status === "complete");
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/login");
-  //   }
-  // }, [user, navigate]);
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="px-3 flex flex-col items-center">
-      <Navbar setList={setList} list={list} />
+      <Navbar setList={setList} list={list} required={true} />
       <HomeMenu
         setFilter={setFilter}
         filter={filter}
@@ -164,7 +164,7 @@ const handleDrop = ()=>{
             />
           </div>
 
-     
+
         </>
       )}
 

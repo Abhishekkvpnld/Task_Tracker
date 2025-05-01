@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // import Link
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { signup_api } from "../api/api";
 
 const Signup = () => {
   const [form, setForm] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -11,21 +13,38 @@ const Signup = () => {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); 
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError(""); // reset error on change
+    setError(""); 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match");
       return;
     }
 
-    console.log("Signup Data:", form);
-    // send to backend here
+    setLoading(true); 
+    setError(""); 
+
+
+    try {
+      const response = await axios.post(signup_api, form);
+      if (response?.data?.success) {
+        console.log("Signup successful:", response.data);
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      setError(error.response?.data?.message || "An error occurred during signup.");
+    } finally {
+      setLoading(false); 
+    }
   };
 
   return (
@@ -37,9 +56,9 @@ const Signup = () => {
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
             <input
               type="text"
-              name="name"
+              name="username"
               id="name"
-              value={form.name}
+              value={form.username}
               onChange={handleChange}
               required
               className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-blue-500"
@@ -108,8 +127,9 @@ const Signup = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+            disabled={loading}
           >
-            Create Account
+            {loading ? "Signing up..." : "Create Account"}
           </button>
         </form>
 

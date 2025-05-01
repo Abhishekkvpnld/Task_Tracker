@@ -1,17 +1,44 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // <-- import Link
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { login_api } from "../api/api";
 
 const Login = () => {
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ email: "user@gmail.com", password: "123456" });
+  const [error, setError] = useState(""); 
+  const [loading, setLoading] = useState(false); 
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", form);
-    // Handle login logic here
+
+    if (!form.email || !form.password) {
+      setError("Please fill in both fields.");
+      return;
+    }
+
+    setLoading(true);
+    setError(""); 
+
+    try {
+      const response = await axios.post(login_api, form, {
+        withCredentials: true,
+      });
+
+      if (response?.data?.success) {
+        navigate("/");
+      }
+    } catch (error) {
+      // Handle error
+      console.error("Login error:", error);
+      setError(error.response?.data?.message || "An error occurred during login.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,11 +78,14 @@ const Login = () => {
             />
           </div>
 
+          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+            disabled={loading}
           >
-            Sign In
+            {loading ? "Logging in..." : "Sign In"}
           </button>
         </form>
 
