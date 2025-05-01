@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; // <-- import Link
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -10,7 +11,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", form);
-    // You can send this data to your backend here
+    // Handle login logic here
   };
 
   return (
@@ -57,6 +58,14 @@ const Login = () => {
             Sign In
           </button>
         </form>
+
+        {/* Signup Link */}
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don’t have an account?{" "}
+          <Link to="/signup" className="text-blue-600 hover:underline">
+            Sign up
+          </Link>
+        </p>
       </div>
     </div>
   );
